@@ -1,0 +1,37 @@
+Notacion de comandos
+[*] = para ambas mv de linux 
+[B] = solo para mv backup
+[M] = solo para master
+
+Master 192.168.100.165
+Backup 192.168.100.166
+
+nmtui
+systemctl restart NetworkManager
+
+
+yum install nginx -y
+yum install keepalived -y
+sestatus  [*]
+service nginx start [*]
+systemctl enable nginx [*]
+service nginx status [*]
+firewall-cmd --add-service=http --permanent --zone=public
+firewall-cmd --reload [*] 
+echo "<h1> NODO 1 </h1>" | tee /usr/share/nginx/html/index.html [M]
+echo "<h1> NODO 2 </h1>" | tee /usr/share/nginx/html/index.html [B]
+yum install nano -y [*]
+nano /etc/keepalived/keepalived.conf
+echo "" | tee /etc/keepalived/keepalived.conf
+
+	state MASTER [m]  , BACKUP [B]
+	virtual_router_id debe ser igual 
+	priority [m] = 110 , backup [b] = 100
+
+nano /bin/check_nginx.sh
+chmod 755 /bin/check_nginx.sh
+service keepalived start
+systemctl enable keepalived
+firewall-cmd --add-rich-rule='rule protocol value="vrrp" accept' --permanent
+firewall-cmd --reload
+service keepalived restart
