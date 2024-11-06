@@ -1,0 +1,140 @@
+-----------------WORD PRESS -----------------------------------
+------------- Servidor Centralizado ---------------------------
+
+yum install httpd -y
+service httpd start 
+service httpd status
+
+systemctl enable httpd
+
+firewall-cmd --permanente --zone=public --add-service=http
+firewall-cmd --permanente --zone=public --add-service=https
+
+firewall-cmd --reload
+
+cd /var/www/html
+
+yum install nano vim -y
+yum install MySQL mysql-server -y
+systemctl start mysqld
+systemctl status mysqld
+systemctl enable mysqld
+
+mysql_secure_installation
+(TODO NO)
+
+
+MySQL -u root -p
+
+show databases
+CREATE database DB_WordPress
+Exit;
+
+yum install php -y
+dnf install php-fpm -y
+nstall php-cli php-fpm php-curl phpmysqlnd php-gd php-opcache php-zip php-intl php-common php-bcmath php-imagick php-xml
+dnf install php-devel
+dnf install php-xdebug php-pcov
+
+
+systemctl restart php-fpm
+systemctl restart httpd
+
+yum install php-mysqlnd -y
+wget https://wordpress.org/latest.zip
+unzip latest.zip
+
+(Configuracion de WordPrees)
+-------------------WORD PRESS ----------------------------------
+---------------- Servidor Distribuido --------------------------
+
+cambiar de nombre = set hostname [nombre]
+			hostnamectl set-hostname NUEVO_NOMBRE
+yum install httpd -y 
+service httpd start 
+service httpd status
+
+linea para activar el servicio automanticamente = systemctl enable httpd  
+firewall-cmd --permanent --zone=public --add-service=http
+firewall-cmd --reload
+
+--- instalar mysql ----
+yum install mysql mysql-server -y 
+systemctl start mysqld
+systemctl status mysqld
+systemctl enable mysqld
+mysql_Secure_installation.  --- Todos no ------
+firewall-cmd --permanent --add-service=http --zone=public 
+firewall-cmd --reload
+
+---------------------------------------------------------
+Nuevas cosas +
+
+setenforce 0 
+ingresar mysql ---- mysql -u root -p (pide password)
+			create database bd_wordpress
+			show databases; 
+			 RENAME USER 'root'@'localhost' TO 'root'@'%'; // conexiones para todo
+			 exit; 
+
+cd /var/www/html 
+yum install unzip -y
+yum install wget -y
+wget  https://wordpress.org/latest.zip
+unzip lastest.zip 
+yum install php -y 
+install php php-mysqlnd php-xml php-gd php-mbstring php-json php-cli -y
+
+systemctl restart php-fpm 
+systemctl restart httpd
+yum install php-mysqlnd -y  
+
+setenforce 0 -- servidor wordpres -- 
+
+
+ip 192.168.1.12 (servidro de base de datos). 
+
+----------------------------------
+servidor wordpress - en ambos ---------------
+firewall-cmd --zone=public --add-port=3306/tcp --permanent
+firewall-cmd --reload
+setenforce 0 
+
+
+---------------------Servidor Proxy ---------------------------
+
+
+yum install epel-release -y
+
+yum install squid -y
+
+yum install nano -y
+
+squid -v
+
+systemctl start squid
+
+systemctl enable squid
+
+cd /etc/squid/
+
+nano [palabras]
+
+nano [paginas]
+
+cp /etc/squid/squid.conf{,.back}
+
+nano squid.conf
+
+----------Dentro de squid.conf --------------
+acl palabras url_regex "/etc/squid/[1]"
+acl paginas dstdomain "/etc/squid/[2]"
+
+------------- Mas abajo --------------------
+http_access deny [1]
+http_access deny [2]
+http_access allow all
+
+service squid restart 
+
+firewall-cmd --permanent --add-service=squid
